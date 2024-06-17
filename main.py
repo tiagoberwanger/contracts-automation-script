@@ -24,7 +24,7 @@ data_da_assinatura = None
 
 if eh_novo_contrato:
     nome = input('Digite o nome do inquilino:')
-    cpf = input('Digite o CPF do inquilino (apenas números):')
+    cpf = input('Digite o CPF do inquilino (formato ___.___.___.___.___):')
     nacionalidade = input('Digite sua nacionalidade:')
     naturalidade = input('Digite em qual cidade e estado você é natural (formato _______/__):')
     estado_civil = input('Digite seu estado civil:')
