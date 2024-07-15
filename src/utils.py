@@ -1,6 +1,5 @@
 from num2words import num2words
 from datetime import date
-from decimal import Decimal
 
 from enums import TipoImovelEnum
 
@@ -36,6 +35,10 @@ def abrir_planilha(chave: str):
     sheet = gc.open_by_key(chave)
 
     return sheet.get_worksheet(0)
+
+
+def alterar_status_contrato():
+    pass
 
 
 def obtem_valor_por_tipo_imovel(tipo_imovel: int):
