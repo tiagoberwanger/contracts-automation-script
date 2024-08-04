@@ -3,7 +3,15 @@ from datetime import date
 
 from enums import TipoImovelEnum
 
-ANO_ATUAL = date.today().year
+DATA_HOJE = date.today()
+ANO_ATUAL = DATA_HOJE.year
+MES_ATUAL = DATA_HOJE.month
+DIA_ATUAL = DATA_HOJE.day
+MESES = [
+    'janeiro', 'fevereiro', 'março', 'abril',
+    'maio', 'junho', 'julho', 'agosto',
+    'setembro', 'outubro', 'novembro', 'dezembro'
+]
 
 
 def valor_formatado_por_extenso(numero: int):
@@ -14,15 +22,10 @@ def valor_formatado_por_extenso(numero: int):
 def data_por_extenso(data: str):
     dia, mes, ano = map(int, data.split('/'))
 
-    dia_extenso = num2words(dia, lang='pt_BR', to='ordinal')
+    dia_extenso = num2words(dia, lang='pt_BR', to='cardinal')
+    mes_extenso = MESES[mes - 1]
     ano_extenso = num2words(ano, lang='pt_BR', to='year')
 
-    meses = [
-        'janeiro', 'fevereiro', 'março', 'abril',
-        'maio', 'junho', 'julho', 'agosto',
-        'setembro', 'outubro', 'novembro', 'dezembro'
-    ]
-    mes_extenso = meses[mes - 1]
 
     return f"{dia_extenso} de {mes_extenso} de {ano_extenso}"
 
@@ -49,20 +52,25 @@ def obtem_valor_por_tipo_imovel(tipo_imovel: int):
     }
     return VALORES.get(tipo_imovel, 0)
 
+def formatar_cpf(cpf):
+    if len(cpf) < 11:
+        raise Exception('CPF incorreto!')
+    return f'{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:11]}'
 
 def formatar_dados(dados: dict):
     nome_formatado = dados.get('nome').upper()
+    cpf_formatado = formatar_cpf(dados.get('cpf'))
     data_entrada = dados.get('data_entrada')
     tipo_imovel = dados.get('tipo_imovel')[0]
     valor = obtem_valor_por_tipo_imovel(int(tipo_imovel))
     valor_por_extenso = valor_formatado_por_extenso(valor)
     data_saida = data_entrada.replace(data_entrada.split('/')[2], str(date.today().year + 1))
-    data_hoje = date.today().strftime('%d/%m/%Y')
+    data_hoje = f'{DIA_ATUAL} de {MESES[MES_ATUAL - 1]} de {ANO_ATUAL}'
 
     return {
         'nome': nome_formatado,
         'tipo_imovel': int(tipo_imovel),
-        'cpf': dados.get('cpf'),
+        'cpf': cpf_formatado,
         'nacionalidade': dados.get('nacionalidade'),
         'naturalidade': dados.get('naturalidade'),
         'estado_civil': dados.get('estado_civil'),

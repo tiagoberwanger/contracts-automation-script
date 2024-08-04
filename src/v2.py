@@ -32,6 +32,7 @@ if __name__ == '__main__':
 # DONE Usar API do sheets para acessar planilha com dados dos inquilinos do formulário do sheets
 # DONE Pesquisar libs para manipular .docx
 # DONE Manipular as informações do .docx, buscar e substitui palavras-chave, entregar o documento formatado
+# DONE Formatar CPF na saída, ajustar data por extenso e data do contrato
 # TODO Ao salvar, mudar o status do contrato realizado
 # TODO Salvar, após concluído, esse contrato em formato PDF
 # TODO Enviar, após preenchido, esse contrato para o e-mail do inquilino
