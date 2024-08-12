@@ -1,7 +1,9 @@
+from googleapiclient.errors import HttpError
 from num2words import num2words
 from datetime import date
 
 from enums import TipoImovelEnum
+from auth import get_authenticated_service, documento_id_com_dados_inquilinos
 
 DATA_HOJE = date.today()
 ANO_ATUAL = DATA_HOJE.year
@@ -26,13 +28,13 @@ def data_por_extenso(data: str):
     mes_extenso = MESES[mes - 1]
     ano_extenso = num2words(ano, lang='pt_BR', to='year')
 
-
     return f"{dia_extenso} de {mes_extenso} de {ano_extenso}"
 
 
 def abrir_planilha(chave: str):
     import gspread
 
+    # tentar sem usar a lib gspread
     gc = gspread.service_account('/Users/mplayer/Developer/quickstart-google-api/.config/gspread/service_account.json')
 
     sheet = gc.open_by_key(chave)
@@ -40,8 +42,24 @@ def abrir_planilha(chave: str):
     return sheet.get_worksheet(0)
 
 
-def alterar_status_contrato():
-    pass
+def alterar_status_contratos_gerados():
+    sheets_service = None
+    try:
+        sheets_service = get_authenticated_service('sheets', 'v4')
+    except HttpError as error:
+        print(f"Ocorreu um erro ao acessar as APIs: {error}")
+
+    try:
+        sheets_service.spreadsheets().batchUpdate(spreadsheetId=documento_id_com_dados_inquilinos, body={'requests': [{
+            "findReplace": {
+                "find": 'FALSE',
+                "replacement": 'TRUE',
+                "allSheets": True,
+            }
+        }]}).execute()
+
+    except Exception as error:
+        print(f"Ocorreu um erro ao alterar status do contrato gerado: {error}")
 
 
 def obtem_valor_por_tipo_imovel(tipo_imovel: int):
@@ -52,10 +70,12 @@ def obtem_valor_por_tipo_imovel(tipo_imovel: int):
     }
     return VALORES.get(tipo_imovel, 0)
 
+
 def formatar_cpf(cpf):
     if len(cpf) < 11:
         raise Exception('CPF incorreto!')
     return f'{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:11]}'
+
 
 def formatar_dados(dados: dict):
     nome_formatado = dados.get('nome').upper()
@@ -74,58 +94,66 @@ def formatar_dados(dados: dict):
         'nacionalidade': dados.get('nacionalidade'),
         'naturalidade': dados.get('naturalidade'),
         'estado_civil': dados.get('estado_civil'),
-        'numero': dados.get('numero_imovel'),
+        'numero': str(dados.get('numero_imovel')),
         'data_entrada': data_entrada,
         'data_entrada_por_extenso': data_por_extenso(data_entrada),
         'data_saida': data_saida,
         'data_saida_por_extenso': data_por_extenso(data_saida),
-        'valor': f'R$ {str(valor)},00',
+        'valor': f'R${str(valor)},00',
         'valor_por_extenso': valor_por_extenso,
         'data_da_assinatura': data_hoje
     }
 
 
+def obter_valores_de_planilha(planilha):
+    dados = planilha.get_all_values()
+    chave = dados[1]
+    valores = dados[2:]
+    return chave, valores
+
+
 def substituir_dados(dados: dict):
-    from docx import Document
-
     # Define qual o contrato
-    CONTRATO_POR_IMOVEL = {
-        TipoImovelEnum.QUITINETE: 'contrato_quitinete',
-        TipoImovelEnum.APARTAMENTO: 'contrato_apartamento',
-        TipoImovelEnum.QUARTO: 'contrato_quarto'
+    CONTRATO_ID_POR_IMOVEL = {
+        TipoImovelEnum.QUITINETE: '1MJ677JL7l4E6B27G1Z9Bhf7nOwgjmOj6TKE72ZbeQOo',
+        TipoImovelEnum.APARTAMENTO: '1FhFIdUCNH9l1Y2DcR4Kzl_qxdVVv3Q9fwb4rRtja4mA',
+        TipoImovelEnum.QUARTO: '1trCLTFo5bdRp7e-_Y6i1fpmJbbieGNFN'
     }
-    contrato = CONTRATO_POR_IMOVEL[dados.get('tipo_imovel')]
-    documento_contrato = Document(f'./contratos/{contrato}_modelo.docx')
+    modelo_id = CONTRATO_ID_POR_IMOVEL[dados.get('tipo_imovel')]
 
-    dados_alterar_novo = {
-        '{nome}': dados.get('nome'),
-        '{cpf}': dados.get('cpf'),
-        '{nacionalidade}': dados.get('nacionalidade'),
-        '{naturalidade}': dados.get('naturalidade'),
-        '{estado_civil}': dados.get('estado_civil'),
-        '{numero}': dados.get('numero'),
-        '{data_entrada}': dados.get('data_entrada'),
-        '{data_entrada_por_extenso}': dados.get('data_entrada_por_extenso'),
-        '{data_saida}': dados.get('data_saida'),
-        '{data_saida_por_extenso}': dados.get('data_saida_por_extenso'),
-        '{valor}': dados.get('valor'),
-        '{valor_por_extenso}': dados.get('valor_por_extenso'),
-        '{data_da_assinatura}': dados.get('data_da_assinatura')
-    }
+    del dados['tipo_imovel']
+
+    # carregar serviços de APIs
+    docs_service = None
+    drive_service = None
+    try:
+        docs_service = get_authenticated_service('docs', 'v1')
+        drive_service = get_authenticated_service('drive', 'v3')
+    except HttpError as error:
+        print(f"Ocorreu um erro ao acessar as APIs: {error}")
+
+    # duplicar o modelo e salvar com a extensão do nome e timestamp (API drive)
+    documento = drive_service.files().copy(fileId=modelo_id, body={'name': f"CONTRATO DE {dados.get('nome')}"}).execute()
+
+    # iterar sobre tags e preencher com dados captados (API docs)
+    lista_de_args = [k for k in dados.keys()]
+    requests = []
+    for arg in lista_de_args:
+        tag = "{{" + str(arg) + "}}"
+        texto = dados.get(arg)
+        requests.append({
+            'replaceAllText': {
+                'containsText': {
+                    'text': tag,
+                    'matchCase': 'true'
+                },
+                'replaceText': texto,
+            },
+        })
 
     try:
-        for p in documento_contrato.paragraphs:
-            for k, v in dados_alterar_novo.items():
-                if k in p.text:
-                    p.text = p.text.replace(k, v)
-
-        # Salva o documento modificado
-        nome_formatado = dados.get('nome').replace(' ', '_').lower()
-        documento_contrato.save(f'./contratos/{contrato}_{nome_formatado}_{ANO_ATUAL}.docx')
-
-        # Mensagem de sucesso
+        docs_service.documents().batchUpdate(documentId=documento.get('id'), body={'requests': requests}).execute()
         print("Novo contrato criado com sucesso!")
 
-    except Exception as e:
-        print(e)
-        print("Não foi possível salvar o contrato!")
+    except Exception as error:
+        print(f"Ocorreu um erro ao criar o contrato: {error}")
