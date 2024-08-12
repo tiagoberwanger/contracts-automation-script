@@ -1,12 +1,16 @@
-from utils import abrir_planilha, formatar_dados, substituir_dados, alterar_status_contrato
+from src.auth import documento_id_com_dados_inquilinos
+from utils import abrir_planilha, formatar_dados, substituir_dados, alterar_status_contratos_gerados, obter_valores_de_planilha
 
 
 def main():
-    planilha = abrir_planilha(chave='1UzHWKA-qZTEfPDXs1l4o7FUp3BuI-MZcU3aEqYYJCbo')
-    dados = planilha.get_all_values()
+    planilha = abrir_planilha(chave=documento_id_com_dados_inquilinos)
+    chave, valores = obter_valores_de_planilha(planilha)
 
-    chave = dados[1]
-    valores = dados[2:]
+    # verifica se há contratos para gerar
+    todos_os_contratos_foram_gerados = all(valor[-1] == 'TRUE' for valor in valores)
+    if todos_os_contratos_foram_gerados:
+        print('Todos os contratos já foram gerados!')
+        return
 
     for valor in valores:
         contrato_foi_gerado = valor[-1] == 'TRUE'
@@ -21,7 +25,7 @@ def main():
 
         substituir_dados(dados_formatados)
 
-        alterar_status_contrato()
+        alterar_status_contratos_gerados()
 
 
 if __name__ == '__main__':
@@ -33,6 +37,7 @@ if __name__ == '__main__':
 # DONE Pesquisar libs para manipular .docx
 # DONE Manipular as informações do .docx, buscar e substitui palavras-chave, entregar o documento formatado
 # DONE Formatar CPF na saída, ajustar data por extenso e data do contrato
-# TODO Ao salvar, mudar o status do contrato realizado
+# DONE Usar APIs do google (drive, sheets, docs)
+# DONE Ao salvar, mudar o status do contrato realizado
 # TODO Salvar, após concluído, esse contrato em formato PDF
 # TODO Enviar, após preenchido, esse contrato para o e-mail do inquilino
