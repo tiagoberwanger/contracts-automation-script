@@ -178,7 +178,7 @@ def converter_contrato_para_pdf(documento_id):
         print(f"Ocorreu um erro ao exportar o PDF: {error}")
 
 
-def enviar_email_com_contrato(nome, arquivo_em_bytes):
+def enviar_email_com_contrato(dados, arquivo_em_bytes):
     gmail_service = None
     try:
         gmail_service = get_authenticated_service('gmail', 'v1')
@@ -190,11 +190,12 @@ def enviar_email_com_contrato(nome, arquivo_em_bytes):
 
         # headers
         mime_message["From"] = "me"
-        mime_message["Subject"] = "Contrato de aluguel - Residencial Berwanger"
+        mime_message["To"] = dados['email']
+        mime_message["Subject"] = "Contrato de aluguel - Residencial"
 
         # text
         mime_message.set_content(
-            f"Olá {nome}. Segue o seu contrato de aluguel em anexo! "
+            f"Olá {dados['nome']}. Segue o seu contrato de aluguel em anexo! "
             "Favor ler com atenção e qualquer dúvida entrar em contato comigo. "
             "Att, Tiago."
         )

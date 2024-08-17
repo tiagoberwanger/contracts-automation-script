@@ -34,7 +34,11 @@ def main():
         arquivo_em_bytes = converter_contrato_para_pdf(documento_id)
 
         # envia rascunho por e-mail para eu conferir
-        enviar_email_com_contrato(dados_formatados.get('nome'), arquivo_em_bytes)
+        dados_envio = {
+            'nome': dados_apresentados.get('nome'),
+            'email': dados_apresentados.get('email')
+        }
+        enviar_email_com_contrato(dados_envio, arquivo_em_bytes)
 
     # altera status do contrato gerado
     alterar_status_contratos_gerados()
