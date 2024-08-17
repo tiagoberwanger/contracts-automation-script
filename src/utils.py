@@ -1,3 +1,6 @@
+import base64
+from email.message import EmailMessage
+
 from googleapiclient.errors import HttpError
 from num2words import num2words
 from datetime import date
@@ -153,7 +156,56 @@ def substituir_dados(dados: dict):
 
     try:
         docs_service.documents().batchUpdate(documentId=documento.get('id'), body={'requests': requests}).execute()
-        print("Novo contrato criado com sucesso!")
+        print("Novo contrato criado!")
+        return documento.get('id')
 
     except Exception as error:
         print(f"Ocorreu um erro ao criar o contrato: {error}")
+
+
+def converter_contrato_para_pdf(documento_id):
+    drive_service = None
+    try:
+        drive_service = get_authenticated_service('drive', 'v3')
+    except HttpError as error:
+        print(f"Ocorreu um erro ao acessar as APIs: {error}")
+
+    try:
+        arquivo_em_bytes = drive_service.files().export(fileId=documento_id, mimeType='application/pdf').execute()
+        print("Arquivo em PDF exportado!")
+        return arquivo_em_bytes
+    except HttpError as error:
+        print(f"Ocorreu um erro ao exportar o PDF: {error}")
+
+
+def enviar_email_com_contrato(nome, arquivo_em_bytes):
+    gmail_service = None
+    try:
+        gmail_service = get_authenticated_service('gmail', 'v1')
+    except HttpError as error:
+        print(f"Ocorreu um erro ao acessar as APIs: {error}")
+
+    try:
+        mime_message = EmailMessage()
+
+        # headers
+        mime_message["From"] = "me"
+        mime_message["Subject"] = "Contrato de aluguel - Residencial Berwanger"
+
+        # text
+        mime_message.set_content(
+            f"Olá {nome}. Segue o seu contrato de aluguel em anexo! "
+            "Favor ler com atenção e qualquer dúvida entrar em contato comigo. "
+            "Att, Tiago."
+        )
+
+        mime_message.add_attachment(arquivo_em_bytes, 'application', 'pdf')
+
+        encoded_message = base64.urlsafe_b64encode(mime_message.as_bytes()).decode()
+
+        create_draft_request_body = {"message": {"raw": encoded_message}}
+        gmail_service.users().drafts().create(userId="me", body=create_draft_request_body).execute()
+        print("Contrato salvo nos rascunhos!")
+
+    except Exception as error:
+        print(f"Ocorreu um erro ao enviar o email: {error}")
