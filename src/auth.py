@@ -9,7 +9,8 @@ from googleapiclient.errors import HttpError
 SCOPES = [
     'https://www.googleapis.com/auth/documents',
     'https://www.googleapis.com/auth/spreadsheets',
-    'https://www.googleapis.com/auth/drive'
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/gmail.compose'
 ]
 
 documento_id_com_dados_inquilinos = '1UzHWKA-qZTEfPDXs1l4o7FUp3BuI-MZcU3aEqYYJCbo'
