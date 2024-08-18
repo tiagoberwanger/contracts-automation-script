@@ -1,4 +1,5 @@
 import os.path
+from dotenv import load_dotenv
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -13,10 +14,24 @@ SCOPES = [
     'https://www.googleapis.com/auth/gmail.compose'
 ]
 
+load_dotenv()
+
+CLIENT_CONFIG = {'installed': {
+    'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+    'project_id': os.getenv('GOOGLE_PROJECT_ID'),
+    'auth_uri': 'https://accounts.google.com/o/oauth2/auth',
+    'token_uri': "https://oauth2.googleapis.com/token",
+    'auth_provider_x509_cert_url': 'https://www.googleapis.com/oauth2/v1/certs',
+    'client_secret': os.getenv('GOOGLE_CLIENT_SECRET'),
+    'redirect_uris': [
+        os.getenv('GOOGLE_URIS')
+    ],
+}}
+
 documento_id_com_dados_inquilinos = '1UzHWKA-qZTEfPDXs1l4o7FUp3BuI-MZcU3aEqYYJCbo'
 
+
 def get_authenticated_service(service_name: str, version: str):
-    """Shows basic usage of the API."""
     creds = None
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
@@ -25,9 +40,9 @@ def get_authenticated_service(service_name: str, version: str):
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                "credentials.json", SCOPES
-            )
+            flow = InstalledAppFlow.from_client_config(
+                client_config=CLIENT_CONFIG,
+                scopes=SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open("token.json", "w") as token:

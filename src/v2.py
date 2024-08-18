@@ -57,4 +57,4 @@ if __name__ == '__main__':
 # DONE Salvar esse contrato em formato PDF
 # DONE Enviar esse contrato para o meu e-mail para conferência
 # DONE Eliminar o gspread
-# TODO Salvar chaves no .env
+# DONE Salvar chaves no .env
