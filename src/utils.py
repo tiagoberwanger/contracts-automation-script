@@ -34,15 +34,12 @@ def data_por_extenso(data: str):
     return f"{dia_extenso} de {mes_extenso} de {ano_extenso}"
 
 
-def abrir_planilha(chave: str):
-    import gspread
-
-    # tentar sem usar a lib gspread
-    gc = gspread.service_account('/Users/mplayer/Developer/quickstart-google-api/.config/gspread/service_account.json')
-
-    sheet = gc.open_by_key(chave)
-
-    return sheet.get_worksheet(0)
+def abrir_planilha(documento_id: str):
+    try:
+        sheets_service = get_authenticated_service('sheets', 'v4')
+        return sheets_service.spreadsheets().values().get(spreadsheetId=documento_id, range="A2:L6").execute()
+    except HttpError as error:
+        print(f"Ocorreu um erro ao exportar o PDF: {error}")
 
 
 def alterar_status_contratos_gerados():
@@ -109,9 +106,8 @@ def formatar_dados(dados: dict):
 
 
 def obter_valores_de_planilha(planilha):
-    dados = planilha.get_all_values()
-    chave = dados[1]
-    valores = dados[2:]
+    dados = planilha.get("values", [])
+    chave, valores = dados[0], dados[1:]
     return chave, valores
 
 

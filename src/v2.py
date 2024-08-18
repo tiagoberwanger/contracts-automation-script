@@ -5,7 +5,7 @@ from utils import abrir_planilha, formatar_dados, substituir_dados, alterar_stat
 
 def main():
     # abre planilha com dados de inquilinos
-    planilha = abrir_planilha(chave=documento_id_com_dados_inquilinos)
+    planilha = abrir_planilha(documento_id=documento_id_com_dados_inquilinos)
     chave, valores = obter_valores_de_planilha(planilha)
 
     # verifica se há contratos para gerar
@@ -56,5 +56,5 @@ if __name__ == '__main__':
 # DONE Ao salvar, mudar o status do contrato realizado
 # DONE Salvar esse contrato em formato PDF
 # DONE Enviar esse contrato para o meu e-mail para conferência
-# TODO Eliminar o gspread
+# DONE Eliminar o gspread
 # TODO Salvar chaves no .env
