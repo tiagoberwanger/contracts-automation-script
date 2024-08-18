@@ -5,7 +5,7 @@ from utils import abrir_planilha, formatar_dados, substituir_dados, alterar_stat
 
 def main():
     # abre planilha com dados de inquilinos
-    planilha = abrir_planilha(documento_id=documento_id_com_dados_inquilinos)
+    planilha = abrir_planilha(documento_id=documento_id_com_dados_inquilinos, range="A2:L50")
     chave, valores = obter_valores_de_planilha(planilha)
 
     # verifica se há contratos para gerar

@@ -34,10 +34,10 @@ def data_por_extenso(data: str):
     return f"{dia_extenso} de {mes_extenso} de {ano_extenso}"
 
 
-def abrir_planilha(documento_id: str):
+def abrir_planilha(documento_id: str, range: str):
     try:
         sheets_service = get_authenticated_service('sheets', 'v4')
-        return sheets_service.spreadsheets().values().get(spreadsheetId=documento_id, range="A2:L6").execute()
+        return sheets_service.spreadsheets().values().get(spreadsheetId=documento_id, range=range).execute()
     except HttpError as error:
         print(f"Ocorreu um erro ao exportar o PDF: {error}")
 
