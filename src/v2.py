@@ -52,9 +52,9 @@ if __name__ == '__main__':
 # DONE Pesquisar libs para manipular .docx
 # DONE Manipular as informações do .docx, buscar e substitui palavras-chave, entregar o documento formatado
 # DONE Formatar CPF na saída, ajustar data por extenso e data do contrato
-# DONE Usar APIs do google (drive, sheets, docs)
+# DONE Usar APIs do google (drive, sheets, docs, gmail)
 # DONE Ao salvar, mudar o status do contrato realizado
+# DONE Salvar esse contrato em formato PDF
+# DONE Enviar esse contrato para o meu e-mail para conferência
 # TODO Eliminar o gspread
 # TODO Salvar chaves no .env
-# DONE Salvar, após concluído, esse contrato em formato PDF
-# DONE Enviar, após preenchido, esse contrato para o meu e-mail para conferência
