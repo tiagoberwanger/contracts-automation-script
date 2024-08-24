@@ -58,7 +58,4 @@ if __name__ == '__main__':
 # DONE Enviar esse contrato para o meu e-mail para conferência
 # DONE Eliminar o gspread
 # DONE Salvar chaves no .env
-# TODO Ajustar valores - tupla com código do imóvel para acessar o valor
-# (1050, #0100) (1050, #0400) (900, #0200) (900, #0300)
-# (1350, #0100) (1250, #0200) (1100, #0300)
-# (565, #0401) (450, #0402) (470, #0403) (480, #0501) (490, #0502) (490 #0503)
+# DONE Ajustar valores - dicionario com código do imóvel para acessar o valor

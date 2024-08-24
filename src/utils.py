@@ -62,13 +62,24 @@ def alterar_status_contratos_gerados():
         print(f"Ocorreu um erro ao alterar status do contrato gerado: {error}")
 
 
-def obtem_valor_por_tipo_imovel(tipo_imovel: int):
-    VALORES = {
-        TipoImovelEnum.QUITINETE: 800,
-        TipoImovelEnum.APARTAMENTO: 1200,
-        TipoImovelEnum.QUARTO: 400
+def _obter_valor_pelo_codigo_do_imovel(codigo_imovel: str):
+    # legenda: número do imóvel (2 dígitos) + número de quartos (2 dígitos) + número do quarto (2 dígitos)
+    VALOR_POR_CODIGO_IMOVEL = {
+        '010100': 1050,
+        '020100': 900,
+        '030100': 900,
+        '040100': 1050,
+        '010200': 1350,
+        '020200': 1250,
+        '030200': 1100,
+        '040301': 565,
+        '040302': 450,
+        '040303': 470,
+        '050301': 480,
+        '050302': 490,
+        '050303': 490
     }
-    return VALORES.get(tipo_imovel, 0)
+    return VALOR_POR_CODIGO_IMOVEL.get(codigo_imovel)
 
 
 def formatar_cpf(cpf):
@@ -82,10 +93,12 @@ def formatar_dados(dados: dict):
     cpf_formatado = formatar_cpf(dados.get('cpf'))
     data_entrada = dados.get('data_entrada')
     tipo_imovel = dados.get('tipo_imovel')[0]
-    valor = obtem_valor_por_tipo_imovel(int(tipo_imovel))
+    numero_formatado = str(dados.get('numero_imovel'))[:2]
+    valor = _obter_valor_pelo_codigo_do_imovel(dados.get('numero_imovel'))
     valor_por_extenso = valor_formatado_por_extenso(valor)
     data_saida = data_entrada.replace(data_entrada.split('/')[2], str(date.today().year + 1))
     data_hoje = f'{DIA_ATUAL} de {MESES[MES_ATUAL - 1]} de {ANO_ATUAL}'
+    valor_formatado = f'R${str(valor)},00'
 
     return {
         'nome': nome_formatado,
@@ -94,12 +107,12 @@ def formatar_dados(dados: dict):
         'nacionalidade': dados.get('nacionalidade'),
         'naturalidade': dados.get('naturalidade'),
         'estado_civil': dados.get('estado_civil'),
-        'numero': str(dados.get('numero_imovel')),
+        'numero': numero_formatado,
         'data_entrada': data_entrada,
         'data_entrada_por_extenso': data_por_extenso(data_entrada),
         'data_saida': data_saida,
         'data_saida_por_extenso': data_por_extenso(data_saida),
-        'valor': f'R${str(valor)},00',
+        'valor': valor_formatado,
         'valor_por_extenso': valor_por_extenso,
         'data_da_assinatura': data_hoje
     }
