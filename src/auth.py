@@ -28,7 +28,7 @@ CLIENT_CONFIG = {'installed': {
     ],
 }}
 
-documento_id_com_dados_inquilinos = '1UzHWKA-qZTEfPDXs1l4o7FUp3BuI-MZcU3aEqYYJCbo'
+documento_id_com_dados_inquilinos = os.getenv('DOC_ID_DADOS_INQUILINOS')
 
 
 def get_authenticated_service(service_name: str, version: str):
