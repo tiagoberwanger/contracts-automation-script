@@ -1,4 +1,4 @@
-from src.auth import documento_id_com_dados_inquilinos
+from auth import documento_id_com_dados_inquilinos
 from utils import abrir_planilha, formatar_dados, substituir_dados, alterar_status_contratos_gerados, obter_valores_de_planilha, enviar_email_com_contrato, \
     converter_contrato_para_pdf
 
