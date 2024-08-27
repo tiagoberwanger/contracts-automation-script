@@ -2,7 +2,9 @@ steps:
     - name: 'gcr.io/cloud-builders/gcloud'
       args: ['app', 'deploy']
 # Post-deployment script execution
-    - name: 'https://us-central1-python.pkg.dev/parabolic-might-310418/python'
-      args: ['-m', 'pip', 'install', '-r', 'requirements.txt']
+    - name: 'python'
+      script: |
+        #!/usr/bin/env python
+        print('hello from python')
 options:
     logging: CLOUD_LOGGING_ONLY
