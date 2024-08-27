@@ -2,7 +2,8 @@ steps:
     - name: 'gcr.io/cloud-builders/gcloud'
       args: ['app', 'deploy']
 # Post-deployment script execution
-    - name: 'gcr.io/cloud-builders/python:3.11'
+    - name: 'python'
+      entrypoint: 'python'
       args: ['python', 'main.py']
 options:
     logging: CLOUD_LOGGING_ONLY
