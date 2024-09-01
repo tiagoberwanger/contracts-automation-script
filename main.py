@@ -65,6 +65,6 @@ scheduler = APScheduler()
 
 @app.route("/")
 def main():
-    scheduler.add_job(id = 'Contract Task', func=contract_task, trigger="interval", seconds=5)
+    scheduler.add_job(id = 'Contract Task', func=contract_task, trigger="interval", seconds=43200)
     scheduler.start()
     return "Contract task on air"
