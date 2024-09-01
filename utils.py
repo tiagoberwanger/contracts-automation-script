@@ -39,7 +39,7 @@ def abrir_planilha(documento_id: str, range: str):
         sheets_service = get_authenticated_service('sheets', 'v4')
         return sheets_service.spreadsheets().values().get(spreadsheetId=documento_id, range=range).execute()
     except HttpError as error:
-        return f"<p>Ocorreu um erro ao abrir a planilha: {error}<p/>"
+        return f"Ocorreu um erro ao abrir a planilha: {error}"
 
 
 def alterar_status_contratos_gerados():
@@ -165,7 +165,6 @@ def substituir_dados(dados: dict):
 
     try:
         docs_service.documents().batchUpdate(documentId=documento.get('id'), body={'requests': requests}).execute()
-        return "Novo contrato criado!"
         return documento.get('id')
 
     except Exception as error:
@@ -181,7 +180,6 @@ def converter_contrato_para_pdf(documento_id):
 
     try:
         arquivo_em_bytes = drive_service.files().export(fileId=documento_id, mimeType='application/pdf').execute()
-        return "Arquivo em PDF exportado!"
         return arquivo_em_bytes
     except HttpError as error:
         return f"Ocorreu um erro ao exportar o PDF: {error}"

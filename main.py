@@ -15,7 +15,7 @@ def main():
     # verifica se há contratos para gerar
     todos_os_contratos_foram_gerados = all(valor[-1] == 'TRUE' for valor in valores)
     if todos_os_contratos_foram_gerados:
-        return '<p>Todos os contratos já foram gerados!</p>'
+        return 'Todos os contratos já foram gerados!'
 
     # itera sobre valores de cada contrato
     for valor in valores:

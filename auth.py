@@ -52,5 +52,4 @@ def get_authenticated_service(service_name: str, version: str):
         service = build(service_name, version, credentials=creds)
         return service
     except HttpError as error:
-        print(f"An error occurred: {error}")
-        return None
+        return f"An error occurred: {error}"
