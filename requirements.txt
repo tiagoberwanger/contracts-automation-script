@@ -6,4 +6,5 @@ google-auth-oauthlib
 num2words
 python-dotenv
 Flask
+Flask-APScheduler
 gunicorn
