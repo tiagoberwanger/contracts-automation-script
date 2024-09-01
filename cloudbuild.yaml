@@ -2,12 +2,5 @@ steps:
     - name: 'gcr.io/cloud-builders/gcloud'
       args: ['app', 'deploy']
 # Post-deployment script execution
-    - name: 'python:3.11'
-      entrypoint: 'bash'
-      args:
-        - '-c'
-        - |
-          pip3 install -r requirements.txt
-          python3 main.py .
 options:
     logging: CLOUD_LOGGING_ONLY
