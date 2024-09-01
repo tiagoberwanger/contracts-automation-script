@@ -46,6 +46,10 @@ def main():
     # altera status do contrato gerado
     alterar_status_contratos_gerados()
 
+if __name__ == '__main__':
+    app.debug = True
+    app.run()
+
 # DONE Pesquisar como fazer um script em py
 # DONE Criar um formulário para o usuário inserir esses dados (google forms)
 # DONE Usar API do sheets para acessar planilha com dados dos inquilinos do formulário do sheets
