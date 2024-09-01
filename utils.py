@@ -39,7 +39,7 @@ def abrir_planilha(documento_id: str, range: str):
         sheets_service = get_authenticated_service('sheets', 'v4')
         return sheets_service.spreadsheets().values().get(spreadsheetId=documento_id, range=range).execute()
     except HttpError as error:
-        return f"Ocorreu um erro ao exportar o PDF: {error}"
+        return f"<p>Ocorreu um erro ao abrir a planilha: {error}<p/>"
 
 
 def alterar_status_contratos_gerados():
