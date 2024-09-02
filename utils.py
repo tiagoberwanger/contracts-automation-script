@@ -198,7 +198,7 @@ def enviar_email_com_contrato(dados, arquivo_em_bytes):
         mime_message = EmailMessage()
 
         # headers
-        mime_message["From"] = "me"
+        mime_message["From"] = "berwangertiago@gmail.com"
         mime_message["To"] = dados['email']
         mime_message["Subject"] = "Contrato de aluguel - Residencial"
 
