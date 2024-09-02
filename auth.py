@@ -52,7 +52,8 @@ def get_authenticated_service(service_name: str, version: str):
     else:
         creds, _ = default(scopes=SCOPES)
     try:
-        service = build(service_name, version, credentials=creds)
+        delegated_credentials = creds.with_subject('berwangertiago@gmail.com')
+        service = build(service_name, version, credentials=delegated_credentials)
         return service
     except HttpError as error:
         return f"Ocorreu um erro na autenticação: {error}"
