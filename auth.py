@@ -33,7 +33,7 @@ documento_id_com_dados_inquilinos = os.getenv('DOC_ID_DADOS_INQUILINOS')
 
 
 def get_authenticated_service(service_name: str, version: str):
-    creds, project_id = default()   
+    creds, _ = default()   
     try:
         service = build(service_name, version, credentials=creds)
         return service
