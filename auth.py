@@ -42,8 +42,8 @@ def get_authenticated_service(service_name: str, version: str):
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    "credentials.json", SCOPES
+                flow = InstalledAppFlow.from_client_config(
+                    client_config=CLIENT_CONFIG, scopes=SCOPES
                 )
                 creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
