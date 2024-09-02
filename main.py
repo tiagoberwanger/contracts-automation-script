@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_apscheduler import APScheduler
+# from flask_apscheduler import APScheduler
 
 from auth import documento_id_com_dados_inquilinos
 from utils import abrir_planilha, formatar_dados, substituir_dados, alterar_status_contratos_gerados, obter_valores_de_planilha, enviar_email_com_contrato, \
@@ -61,10 +61,11 @@ def contract_task():
 # DONE Ajustar valores - dicionario com código do imóvel para acessar o valor
 
 app = Flask(__name__)
-scheduler = APScheduler()
+# scheduler = APScheduler()
 
 @app.route("/")
 def main():
-    scheduler.add_job(id = 'Contract Task', func=contract_task, trigger="interval", seconds=43200)
-    scheduler.start()
+    # scheduler.add_job(id = 'Contract Task', func=contract_task, trigger="interval", seconds=5)
+    # scheduler.start()
+    contract_task()
     return "Contract task on air"
