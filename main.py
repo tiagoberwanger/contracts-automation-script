@@ -1,5 +1,4 @@
 from flask import Flask
-# from flask_apscheduler import APScheduler
 
 from auth import documento_id_com_dados_inquilinos
 from utils import abrir_planilha, formatar_dados, substituir_dados, alterar_status_contratos_gerados, obter_valores_de_planilha, enviar_email_com_contrato, \
@@ -46,26 +45,9 @@ def contract_task():
     # altera status do contrato gerado
     alterar_status_contratos_gerados()
 
-# DONE Pesquisar como fazer um script em py
-# DONE Criar um formulário para o usuário inserir esses dados (google forms)
-# DONE Usar API do sheets para acessar planilha com dados dos inquilinos do formulário do sheets
-# DONE Pesquisar libs para manipular .docx
-# DONE Manipular as informações do .docx, buscar e substitui palavras-chave, entregar o documento formatado
-# DONE Formatar CPF na saída, ajustar data por extenso e data do contrato
-# DONE Usar APIs do google (drive, sheets, docs, gmail)
-# DONE Ao salvar, mudar o status do contrato realizado
-# DONE Salvar esse contrato em formato PDF
-# DONE Enviar esse contrato para o meu e-mail para conferência
-# DONE Eliminar o gspread
-# DONE Salvar chaves no .env
-# DONE Ajustar valores - dicionario com código do imóvel para acessar o valor
-
 app = Flask(__name__)
-# scheduler = APScheduler()
 
 @app.route("/")
 def main():
-    # scheduler.add_job(id = 'Contract Task', func=contract_task, trigger="interval", seconds=5)
-    # scheduler.start()
     contract_task()
     return "Contract task on air"
