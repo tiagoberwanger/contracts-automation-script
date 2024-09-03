@@ -54,3 +54,4 @@ app = Flask(__name__)
 @app.route("/")
 def main():
     contract_task(app.logger)
+    return render_template('index.html')
