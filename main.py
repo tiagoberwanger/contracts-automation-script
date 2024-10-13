@@ -5,16 +5,16 @@ from utils import abrir_planilha, formatar_dados, substituir_dados, alterar_stat
     converter_contrato_para_pdf
 
 
-def contract_task(logs):
-    logs.info('Pesquisando contratos')
+def contract_task():
+    print('Pesquisando contratos')
     # abre planilha com dados de inquilinos
-    planilha = abrir_planilha(documento_id=documento_id_com_dados_inquilinos, range="A2:L50", logs=logs)
+    planilha = abrir_planilha(documento_id=documento_id_com_dados_inquilinos, range="A2:L50")
     chave, valores = obter_valores_de_planilha(planilha)
 
     # verifica se há contratos para gerar
     todos_os_contratos_foram_gerados = all(valor[-1] == 'TRUE' for valor in valores)
     if todos_os_contratos_foram_gerados:
-        logs.info('Todos os contratos já foram gerados!')
+        print('Todos os contratos já foram gerados!')
         return
 
     # itera sobre valores de cada contrato
@@ -28,30 +28,30 @@ def contract_task(logs):
             dados_apresentados[c] = v
 
         # iniciando processo
-        logs.info('Iniciando contrato...')
+        print('Iniciando contrato...')
 
         # coleta e formata dados
-        dados_formatados = formatar_dados(dados_apresentados, logs)
+        dados_formatados = formatar_dados(dados_apresentados)
 
         # substitui dados formatados no contrato
-        documento_id = substituir_dados(dados_formatados, logs)
+        documento_id = substituir_dados(dados_formatados)
 
         # transformar contrato em PDF
-        arquivo_em_bytes = converter_contrato_para_pdf(documento_id, logs)
+        arquivo_em_bytes = converter_contrato_para_pdf(documento_id)
 
         # envia rascunho por e-mail para eu conferir
         dados_envio = {
             'nome': dados_apresentados.get('nome'),
             'email': dados_apresentados.get('email')
         }
-        enviar_email_com_contrato(dados_envio, arquivo_em_bytes, logs)
+        enviar_email_com_contrato(dados_envio, arquivo_em_bytes)
 
     # altera status do contrato gerado
-    alterar_status_contratos_gerados(logs)
+    alterar_status_contratos_gerados()
 
 app = Flask(__name__)
 
 @app.route("/")
 def main():
-    contract_task(app.logger)
+    contract_task()
     return render_template('index.html')
