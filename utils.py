@@ -130,9 +130,9 @@ def obter_valores_de_planilha(planilha):
 def substituir_dados(dados: dict):
     # Define qual o contrato
     CONTRATO_ID_POR_IMOVEL = {
-        TipoImovelEnum.QUITINETE: '1hxLmEMkh_WrBqh0wgNUTvC6XDCKfdAt8',
-        TipoImovelEnum.APARTAMENTO: '1Famz1SspXkRLKBYPWLf2xkTSo2HRjTOx',
-        TipoImovelEnum.QUARTO: '1trCLTFo5bdRp7e-_Y6i1fpmJbbieGNFN'
+        TipoImovelEnum.QUITINETE: '1MJ677JL7l4E6B27G1Z9Bhf7nOwgjmOj6TKE72ZbeQOo',
+        TipoImovelEnum.APARTAMENTO: '1FhFIdUCNH9l1Y2DcR4Kzl_qxdVVv3Q9fwb4rRtja4mA',
+        TipoImovelEnum.QUARTO: '1gfJaEsGwdNGvoChKcKxj48v8Pld36WTQB-yqxoqhYXI'
     }
     modelo_id = CONTRATO_ID_POR_IMOVEL[dados.get('tipo_imovel')]
 
