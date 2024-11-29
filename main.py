@@ -1,5 +1,3 @@
-from flask import Flask, render_template
-
 from auth import documento_id_com_dados_inquilinos
 from utils import abrir_planilha, formatar_dados, substituir_dados, alterar_status_contratos_gerados, obter_valores_de_planilha, enviar_email_com_contrato, \
     converter_contrato_para_pdf
@@ -49,9 +47,5 @@ def contract_task():
     # altera status do contrato gerado
     alterar_status_contratos_gerados()
 
-app = Flask(__name__)
-
-@app.route("/")
-def main():
+if __name__ == '__main__':
     contract_task()
-    return render_template('index.html')

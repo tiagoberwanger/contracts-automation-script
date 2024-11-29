@@ -5,6 +5,4 @@ google-auth-httplib2
 google-auth-oauthlib
 num2words
 python-dotenv
-Flask
-Flask-APScheduler
 gunicorn
